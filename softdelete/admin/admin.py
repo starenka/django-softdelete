@@ -16,7 +16,7 @@ class SoftDeleteObjectInline(admin.TabularInline):
             self.extra = 0
             self.max_num = 0
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         qs = self.model._default_manager.all_with_deleted()
         ordering = self.ordering or ()
         if ordering:
@@ -40,7 +40,7 @@ class SoftDeleteObjectAdmin(admin.ModelAdmin):
             return HttpResponseRedirect('../')
         return super(SoftDeleteObjectAdmin, self).response_change(request, obj, *args, **kwargs)
 
-    def queryset(self, request):
+    def get_queryset(self, request):
         try:
             qs = self.model._default_manager.all_with_deleted()
         except Exception as ex:
@@ -71,12 +71,12 @@ class SoftDeleteRecordAdmin(admin.ModelAdmin):
         if request.POST.has_key('undelete'):
             obj.undelete()
             return HttpResponseRedirect('../')
-        return super(SoftDeleteRecordAdmin, self).response_change(request, obj, 
+        return super(SoftDeleteRecordAdmin, self).response_change(request, obj,
                                                                   *args, **kwargs)
 
     def has_add_permission(self, *args, **kwargs):
         return False
-    
+
     def has_delete_permission(self, *args, **kwargs):
         return False
 
@@ -94,12 +94,12 @@ class ChangeSetAdmin(admin.ModelAdmin):
         if request.POST.has_key('undelete'):
             obj.undelete()
             return HttpResponseRedirect('../')
-        return super(ChangeSetAdmin, self).response_change(request, obj, 
+        return super(ChangeSetAdmin, self).response_change(request, obj,
                                                            *args, **kwargs)
 
     def has_add_permission(self, *args, **kwargs):
         return False
-        
+
     def has_delete_permission(self, *args, **kwargs):
         return False
 
